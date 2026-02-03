@@ -25,7 +25,6 @@ helm install openclaw . --set credentials.anthropicApiKey=sk-ant-xxx
 - [Architecture](#️-architecture)
 - [Storage](#-storage)
 - [Configuration Mode](#-configuration-mode)
-- [Ingress](#-ingress)
 - [Security](#-security)
 - [Uninstallation](#️-uninstallation)
 - [Troubleshooting](#-troubleshooting)
@@ -176,37 +175,9 @@ openclaw:
 
 ---
 
-## 🌐 Ingress
-
-<details>
-<summary><b>Full Ingress Example</b></summary>
-
-To expose OpenClaw via Ingress:
-
-```yaml
-ingress:
-  enabled: true
-  className: nginx
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-  hosts:
-    - host: openclaw.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-          servicePort: gateway
-  tls:
-    - secretName: openclaw-tls
-      hosts:
-        - openclaw.example.com
-```
-
-</details>
-
----
-
 ## 🔒 Security
+
+> ⚠️ **Important:** OpenClaw is an AI agent with broad system access capabilities including shell execution, file system access, and browser automation. Be mindful of network exposure and access controls. See the [OpenClaw Security Guide](https://docs.openclaw.ai/gateway/security) for best practices.
 
 The chart follows security best practices:
 
