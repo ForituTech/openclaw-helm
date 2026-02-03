@@ -1,4 +1,4 @@
-# ⚓ OpenClaw Helm Chart
+# OpenClaw Helm Chart
 
 [![Helm 3](https://img.shields.io/badge/Helm-3.0+-0f1689?logo=helm&logoColor=white)](https://helm.sh/)
 [![Kubernetes 1.19+](https://img.shields.io/badge/Kubernetes-1.19+-326ce5?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
@@ -6,33 +6,21 @@
 
 A Helm chart for deploying [OpenClaw](https://openclaw.ai/) — an open-source AI personal assistant — to Kubernetes.
 
-📖 [Documentation](https://openclaw.ai/docs) • 🐛 [Issues](https://github.com/openclaw/openclaw-helm/issues) • 💬 [Discussions](https://github.com/openclaw/openclaw-helm/discussions)
+[Documentation](https://openclaw.ai/docs) | [Issues](https://github.com/openclaw/openclaw-helm/issues) | [Discussions](https://github.com/openclaw/openclaw-helm/discussions)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
-helm install openclaw . --set credentials.anthropicApiKey=sk-ant-xxx
+helm repo add openclaw https://chrisbattarbee.github.io/openclaw-helm
+helm repo update
+helm install openclaw openclaw/openclaw --set credentials.anthropicApiKey=sk-ant-xxx
 ```
 
 ---
 
-## 📋 Table of Contents
-
-- [Installation](#-installation)
-- [Configuration](#️-configuration)
-- [Architecture](#️-architecture)
-- [Storage](#-storage)
-- [Configuration Mode](#-configuration-mode)
-- [Security](#-security)
-- [Uninstallation](#️-uninstallation)
-- [Troubleshooting](#-troubleshooting)
-- [License](#-license)
-
----
-
-## 📦 Installation
+## Installation
 
 ### Prerequisites
 
@@ -40,11 +28,27 @@ helm install openclaw . --set credentials.anthropicApiKey=sk-ant-xxx
 - Helm 3.0+
 - An API key from a supported LLM provider (Anthropic, OpenAI, etc.)
 
-### Quick Start
+### From Helm Repository (Recommended)
 
 ```bash
-helm install openclaw . --set credentials.anthropicApiKey=sk-ant-xxx
+# Add the repository
+helm repo add openclaw https://chrisbattarbee.github.io/openclaw-helm
+helm repo update
+
+# Install the chart
+helm install openclaw openclaw/openclaw --set credentials.anthropicApiKey=sk-ant-xxx
 ```
+
+<details>
+<summary><b>Install from Local Clone (Development)</b></summary>
+
+```bash
+git clone https://github.com/Chrisbattarbee/openclaw-helm.git
+cd openclaw-helm
+helm install openclaw ./charts/openclaw --set credentials.anthropicApiKey=sk-ant-xxx
+```
+
+</details>
 
 <details>
 <summary><b>Using an Existing Secret</b></summary>
@@ -60,7 +64,7 @@ kubectl create secret generic openclaw-credentials \
 Then install the chart:
 
 ```bash
-helm install openclaw . --set credentials.existingSecret=openclaw-credentials
+helm install openclaw openclaw/openclaw --set credentials.existingSecret=openclaw-credentials
 ```
 
 </details>
@@ -69,14 +73,14 @@ helm install openclaw . --set credentials.existingSecret=openclaw-credentials
 <summary><b>With Custom Values</b></summary>
 
 ```bash
-helm install openclaw . -f my-values.yaml
+helm install openclaw openclaw/openclaw -f my-values.yaml
 ```
 
 </details>
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 ### Key Parameters
 
@@ -119,13 +123,13 @@ helm install openclaw . -f my-values.yaml
 | `persistence.size` | Storage size | `5Gi` |
 | `ingress.enabled` | Enable ingress | `false` |
 
-See [values.yaml](values.yaml) for all available configuration options.
+See [values.yaml](charts/openclaw/values.yaml) for all available configuration options.
 
 </details>
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 OpenClaw is deployed as a single-instance application with the following components:
 
@@ -137,7 +141,7 @@ OpenClaw is deployed as a single-instance application with the following compone
 
 ---
 
-## 💾 Storage
+## Storage
 
 By default, the chart creates a PersistentVolumeClaim for storing OpenClaw configuration and state:
 
@@ -150,14 +154,14 @@ By default, the chart creates a PersistentVolumeClaim for storing OpenClaw confi
 To disable persistence (data will be lost on pod restart):
 
 ```bash
-helm install openclaw . --set persistence.enabled=false
+helm install openclaw openclaw/openclaw --set persistence.enabled=false
 ```
 
 </details>
 
 ---
 
-## 🔀 Configuration Mode
+## Configuration Mode
 
 OpenClaw is inherently stateful and updates its own configuration file at runtime (e.g., when installing skills or changing settings via the UI). By default, the chart uses `merge` mode to preserve these runtime changes.
 
@@ -175,20 +179,20 @@ openclaw:
 
 ---
 
-## 🔒 Security
+## Security
 
-> ⚠️ **Important:** OpenClaw is an AI agent with broad system access capabilities including shell execution, file system access, and browser automation. Be mindful of network exposure and access controls. See the [OpenClaw Security Guide](https://docs.openclaw.ai/gateway/security) for best practices.
+> **Important:** OpenClaw is an AI agent with broad system access capabilities including shell execution, file system access, and browser automation. Be mindful of network exposure and access controls. See the [OpenClaw Security Guide](https://docs.openclaw.ai/gateway/security) for best practices.
 
 The chart follows security best practices:
 
-- ✅ All containers run as non-root (UID 1000)
-- ✅ All capabilities are dropped
-- ✅ Seccomp profiles are enabled
-- ✅ Read-only root filesystem (where possible)
+- All containers run as non-root (UID 1000)
+- All capabilities are dropped
+- Seccomp profiles are enabled
+- Read-only root filesystem (where possible)
 
 ---
 
-## 🗑️ Uninstallation
+## Uninstallation
 
 ```bash
 helm uninstall openclaw
@@ -202,7 +206,7 @@ kubectl delete pvc openclaw
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 <details>
 <summary><b>Debug Commands</b></summary>
@@ -229,6 +233,6 @@ kubectl port-forward svc/openclaw 18789:18789
 
 ---
 
-## 📄 License
+## License
 
 This Helm chart is provided under the [MIT License](LICENSE).
