@@ -1,0 +1,62 @@
+# CI test values for OpenClaw Helm chart
+# Used for helm lint and template validation
+
+credentials:
+  anthropicApiKey: "sk-ant-test-key-for-ci"
+
+openclaw:
+  model:
+    provider: anthropic
+    name: claude-sonnet-4-20250514
+  timezone: "America/New_York"
+  skills:
+    - weather
+    - calendar
+  configOverrides:
+    customSetting: true
+
+chromium:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+persistence:
+  enabled: true
+  size: 1Gi
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+  hosts:
+    - host: openclaw.test.local
+      paths:
+        - path: /
+          pathType: Prefix
+          servicePort: gateway
+  tls:
+    - secretName: openclaw-test-tls
+      hosts:
+        - openclaw.test.local
+
+serviceAccount:
+  create: true
+  annotations:
+    test-annotation: "true"
+
+podAnnotations:
+  prometheus.io/scrape: "true"

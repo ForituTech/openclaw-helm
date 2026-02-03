@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "openclaw.configmapName" . }}
+  labels:
+    {{- include "openclaw.labels" . | nindent 4 }}
+data:
+  openclaw.json: |
+    {{- $config := dict }}
+    {{- $_ := set $config "model" (dict "provider" .Values.openclaw.model.provider "name" .Values.openclaw.model.name) }}
+    {{- $_ := set $config "timezone" .Values.openclaw.timezone }}
+    {{- $_ := set $config "timeout" .Values.openclaw.timeout }}
+    {{- if .Values.chromium.enabled }}
+    {{- $_ := set $config "browser" (dict "cdpUrl" "http://localhost:9222") }}
+    {{- end }}
+    {{- if .Values.openclaw.configOverrides }}
+    {{- $config = merge .Values.openclaw.configOverrides $config }}
+    {{- end }}
+    {{- $config | toPrettyJson | nindent 4 }}
