@@ -49,7 +49,7 @@ openclaw:
   #         enabled: true
   configOverrides: {}
 
-# Credentials for LLM providers
+# Credentials for LLM providers and channels
 credentials:
   # -- Anthropic API key (required if using Anthropic models)
   anthropicApiKey: ""
@@ -57,8 +57,16 @@ credentials:
   openaiApiKey: ""
   # -- Gateway authentication token (auto-generated if empty)
   gatewayToken: ""
+  # -- Extra secrets to add to the secret.yaml file as key-value pairs.
+  # These will be automatically added as environment variables.
+  # Example:
+  #   extraSecrets:
+  #     OPENROUTER_API_KEY: "sk-or-..."
+  #     TELEGRAM_API_KEY: "your-key"
+  extraSecrets: {}
   # -- Use an existing secret instead of creating one
   # The secret must contain keys: ANTHROPIC_API_KEY, OPENAI_API_KEY, OPENCLAW_GATEWAY_TOKEN
+  # and any other keys defined in extraSecrets if applicable.
   existingSecret: ""
 
 # Chromium sidecar for browser automation
